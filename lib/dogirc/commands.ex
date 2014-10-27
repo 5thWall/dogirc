@@ -26,6 +26,6 @@ defmodule DogIRC.Commands do
   def privmsg(target, message),
   do: "PRIVMSG #{target} :#{message}\r\n"
 
-  def quit(reason \\ ""),
-  do: "QUIT #{reason}\r\n"
+  def quit(reason),
+  do: "QUIT :#{reason}\r\n"
 end

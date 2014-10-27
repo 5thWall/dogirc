@@ -33,7 +33,7 @@ defmodule DogIRC.Client do
   # GenServer Implimentation
 
   def init(state) do
-    sock = Socket.TCP.connect! state.server, state.port, packet: :line
+    sock = Socket.TCP.connect! state.server, state.port, packet: :line, mode: :active
     sock |> Socket.Stream.send!(DogIRC.Commands.nick(state.nick))
     sock |> Socket.Stream.send!(DogIRC.Commands.user(state.user, state.real))
     { :ok, %{state | sock: sock } }
@@ -58,5 +58,20 @@ defmodule DogIRC.Client do
   def handle_call({:quit, reason}, _from, state = %DogIRC.Client{sock: sock}) do
     sock |> Socket.Stream.send!(DogIRC.Commands.quit(reason))
     { :reply, :ok, state }
+  end
+
+  def handle_info({:tcp, _, "PING" <> _target}, state) do
+    state.sock |> Socket.Stream.send!("PONG\r\n")
+    { :noreply, state }
+  end
+
+  def handle_info({:tcp, _, data}, state) do
+    IO.puts data
+    {:noreply, state}
+  end
+
+  def handle_info(whatever, state) do
+    IO.puts "Got: #{inspect whatever}"
+    {:noreply, state}
   end
 end
