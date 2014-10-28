@@ -22,6 +22,14 @@ defmodule DogIRC.Commands do
   def privmsg(target, message),
   do: "PRIVMSG #{target} :#{message}\r\n"
 
+  @doc "Command to sand an action to a channel"
+  def action(target, action),
+  do: privmsg(target, "ACTION #{action}")
+
+  @doc "Command to send a notice to a channel or server"
+  def notice(target, message),
+  do: "NOTICE #{target} :#{message}\r\n"
+
   @doc "Command to quit IRC"
   def quit,
   do: "QUIT\r\n"

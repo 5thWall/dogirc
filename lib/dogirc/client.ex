@@ -31,6 +31,14 @@ defmodule DogIRC.Client do
   def privmsg(target, message),
   do: GenServer.call(@name, {:privmsg, target, message})
 
+  @doc "Send an action to a channel"
+  def me(target, action),
+  do: GenServer.cast(@name, {:action, target, action})
+
+  @doc "Send a notice to a channel or user"
+  def notice(target, message),
+  do: GenServer.cast(@name, {:notice, target, message})
+
   @doc """
   Send a raw IRC command, "\r\n" is appended automatically
   """
@@ -64,6 +72,16 @@ defmodule DogIRC.Client do
     { :reply, :ok, state }
   end
 
+  def handle_cast({:action, target, action}, _, state) do
+    Socket.Stream.send!(state.sock, Commands.action(target, action))
+    { :noreply, state }
+  end
+
+  def handle_cast({:notice, target, message}, _, sate) do
+    Socket.Stream.send!(state.sock, Commands.notice(target, action))
+    { :noreply, state }
+  end
+
   def handle_call({:quote, command}, _from, state) do
     Socket.Stream.send!(state.sock, "#{command}\r\n")
     { :reply, :ok, state }
@@ -81,8 +99,8 @@ defmodule DogIRC.Client do
     { :reply, :ok, state }
   end
 
-  def handle_info({:tcp, _, "PING" <> _target}, state) do
-    Socket.Stream.send!(state.sock, "PONG\r\n")
+  def handle_info({:tcp, _, "PING " <> target}, state) do
+    Socket.Stream.send!(state.sock, "PONG #{target}\r\n")
     { :noreply, state }
   end
 
