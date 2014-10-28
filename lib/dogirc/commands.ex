@@ -3,29 +3,30 @@ defmodule DogIRC.Commands do
   Generates properly formatted IRC commands.
   """
 
+  @doc "Command to change IRC nickname"
+  def nick(nick),
+  do: "NICK #{nick}\r\n"
+
   @doc """
-  Command to change IRC nickname
-
-  Example
-  ------
-
-     iex> DogIRC.Commands.nick("frodo")
-     "NICK frodo\r\n"
+  Command to set user information. Hostname and servername are usually
+  ignored by servers, but they can still be specified.
   """
-  def nick(nick) do
-    "NICK #{nick}\r\n"
-  end
+  def user(username, realname, hostname \\ "foo", servername \\ "bar"),
+  do: "USER #{username} #{hostname} #{servername} #{realname}\r\n"
 
-  def user(username, realname, hostname \\ "foo", servername \\ "bar") do
-    "USER #{username} #{hostname} #{servername} #{realname}\r\n"
-  end
-
+  @doc "Command to join a channel"
   def join(channel),
   do: "JOIN #{channel}\r\n"
 
+  @doc "Command to send a message to a channel or user"
   def privmsg(target, message),
   do: "PRIVMSG #{target} :#{message}\r\n"
 
+  @doc "Command to quit IRC"
+  def quit,
+  do: "QUIT\r\n"
+
+  @doc "Command to quit IRC with a part message"
   def quit(reason),
   do: "QUIT :#{reason}\r\n"
 end
