@@ -1,4 +1,9 @@
 defmodule DogIRC.Client do
+  @moduledoc """
+  IRC Client process, handles all interaction wih the IRC process. Can
+  also be queried for current client state.
+  """
+
   use GenServer
   alias DogIRC.Commands
 
