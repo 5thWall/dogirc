@@ -1,5 +1,6 @@
-defmodule UserTest do
+defmodule DogIRC.UserTest do
   use ExUnit.Case, async: true
+  alias DogIRC.User
 
   test 'Parses user names in charlist format' do
     assert User.parse('FifthWall!textual@localhost') == %User{nick: "FifthWall", username: "textual", host: "localhost"}

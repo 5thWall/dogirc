@@ -1,4 +1,4 @@
-defmodule Command do
+defmodule DogIRC.Command do
   @module __MODULE__
 
   defstruct from: '',

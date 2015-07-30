@@ -1,7 +1,8 @@
-defmodule CommandTest do
+defmodule DogIRC.CommandTest do
   @user %User{nick: "neo"}
 
   use ExUnit.Case, async: true
+  alias DogIRC.Command
 
   test "private message to a channel" do
     assert Command.to_command(%{command: 'PRIVMSG', prefix: 'neo', params: ['#matrix', "I am the one"]}) == %Command{from: @user, type: :privmsg, target: '#matrix', message: "I am the one"}

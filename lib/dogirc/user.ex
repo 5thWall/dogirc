@@ -1,4 +1,4 @@
-defmodule User do
+defmodule DogIRC.User do
   @reg ~r/^([a-z]['a-z\d\[\]\{\}\\\^]+)(?:!([^\s]+?))?(?:@(.+))?$/i
   @module __MODULE__
 
