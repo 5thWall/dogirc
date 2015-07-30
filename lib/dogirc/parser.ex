@@ -20,7 +20,7 @@ defmodule DogIRC.Parser do
   end
 
   def parse(%{command: 'PRIVMSG', params: [target, message], prefix: user}) do
-    %Command{type: :privmsg, target: target, message: message, from: parse_user(user)}
+    %Command{type: :privmsg, target: target, message: message, from: User.parse(user)}
   end
 
   def parse(data),
@@ -40,6 +40,4 @@ defmodule DogIRC.Parser do
 
   defp parse_params([param | rest], params),
   do: parse_params(rest, [param | params])
-
-  def parse_user(user), do: %User{nick: user}
 end
