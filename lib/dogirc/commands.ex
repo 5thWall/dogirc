@@ -24,7 +24,7 @@ defmodule DogIRC.Commands do
 
   @doc "Command to sand an action to a channel"
   def action(target, action),
-  do: privmsg(target, "ACTION #{action}")
+  do: privmsg(target, "\x01ACTION #{action}\x01")
 
   @doc "Command to send a notice to a channel or server"
   def notice(target, message),
