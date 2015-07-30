@@ -14,5 +14,9 @@ defmodule Command do
     %@module{type: :privmsg, target: target, message: message, from: User.parse(user)}
   end
 
-  # def to_command(data), do: data
+  def to_command(%{command: 'NOTICE', params: [target, message], prefix: user}) do
+    %@module{type: :notice, target: target, message: message, from: User.parse(user)}
+  end
+
+  def to_command(data), do: data
 end

@@ -10,4 +10,8 @@ defmodule CommandTest do
   test "action message to a channel" do
     assert Command.to_command(%{command: 'PRIVMSG', prefix: 'neo', params: ['#matrix', "\x01ACTION flies away\x01"]}) == %Command{from: @user, type: :action, target: '#matrix', message: "flies away"}
   end
+
+  test "notice message to a channel" do
+    assert Command.to_command(%{command: 'NOTICE', prefix: 'neo', params: ['#matrix', "bots should not reply"]}) == %Command{from: @user, type: :notice, target: '#matrix', message: "bots should not reply"}
+  end
 end
