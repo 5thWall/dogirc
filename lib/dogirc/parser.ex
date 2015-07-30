@@ -19,10 +19,6 @@ defmodule DogIRC.Parser do
     |> parse
   end
 
-  def parse(%{command: 'PRIVMSG', params: [target, message], prefix: user}) do
-    %Command{type: :privmsg, target: target, message: message, from: User.parse(user)}
-  end
-
   def parse(data),
   do: data
 

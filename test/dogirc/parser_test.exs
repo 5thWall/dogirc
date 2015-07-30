@@ -1,9 +1,13 @@
 defmodule DogIRC.ParserTest do
+  @user %User{nick: "neo"}
+
   use ExUnit.Case, async: true
   alias DogIRC.Parser
 
-  test "private message to a channel" do
-    assert Parser.parse(":neo PRIVMSG #matrix :I am the one") == %Command{from: %User{nick: "neo"}, type: :privmsg, target: '#matrix', message: "I am the one"}
+  test "converts to internal representation" do
+    assert Parser.parse(":neo PRIVMSG #matrix :I am the one") == %{prefix: 'neo', command: 'PRIVMSG', params: ['#matrix', "I am the one"]}
+
+    assert Parser.parse(":neo PRIVMSG #matrix,#test :I am the one") == %{prefix: 'neo', command: 'PRIVMSG', params: ['#matrix,#test', "I am the one"]}
   end
 end
 
