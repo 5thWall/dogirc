@@ -1,9 +1,5 @@
 defmodule DogIRC.Parser do
-  defstruct prefix: "",
-            command: "",
-            params: []
-
-  @name __MODULE__
+  @module __MODULE__
 
   def parse(command) when is_binary(command) do
     command
@@ -14,13 +10,17 @@ defmodule DogIRC.Parser do
   end
 
   def parse([[?: | prefix] | message]) do
-    %{ parse(message) | prefix: prefix }
+    Map.put(parse(message), :prefix, prefix)
     |> parse
   end
 
   def parse([command | params]) do
-    %@name{ command: command, params: parse_params(params) }
+    %{ command: command, params: parse_params(params) }
     |> parse
+  end
+
+  def parse(%{command: 'PRIVMSG', params: [target, message], prefix: user}) do
+    %Command{type: :privmsg, target: target, message: message, from: parse_user(user)}
   end
 
   def parse(data),
@@ -32,6 +32,7 @@ defmodule DogIRC.Parser do
   defp parse_params([], params),
   do: Enum.reverse params
 
+  # If the parameters starts with a ':' then just return the end of the string
   defp parse_params([[?: | first] | rest], params) do
     [Enum.join([first | rest], " ") | params]
     |> Enum.reverse
@@ -39,4 +40,6 @@ defmodule DogIRC.Parser do
 
   defp parse_params([param | rest], params),
   do: parse_params(rest, [param | params])
+
+  def parse_user(user), do: %User{nick: user}
 end

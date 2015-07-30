@@ -1,4 +1,6 @@
+rfc1459.pdf
 /_build
 /deps
 erl_crash.dump
 *.ez
+*.beam

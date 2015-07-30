@@ -107,6 +107,7 @@ defmodule DogIRC.Client do
   end
 
   def handle_info({:tcp, _, data}, state) do
+    IO.puts "Raw: #{data}"
     data |> DogIRC.Parser.parse |> inspect |> IO.puts
     {:noreply, state}
   end
