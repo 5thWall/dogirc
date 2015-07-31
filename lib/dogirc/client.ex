@@ -9,11 +9,11 @@ defmodule DogIRC.Client do
 
   @name __MODULE__
 
-  defstruct nick: "DogIRC",
-            user: "DogIRC",
-            real: "DogIRC",
-            server: "localhost",
-            port: 6667,
+  defstruct nick: Application.get_env(:dogirc, :nick),
+            user: Application.get_env(:dogirc, :user),
+            real: Application.get_env(:dogirc, :real),
+            server: Application.get_env(:dogirc, :server),
+            port: Application.get_env(:dogirc, :port),
             sock: nil
 
   ##
