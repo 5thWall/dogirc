@@ -1,124 +1,109 @@
 defmodule DogIRC.Client do
   @moduledoc """
-  IRC Client process, handles all interaction wih the IRC process. Can
-  also be queried for current client state.
+  IRC Client Module. Holds irc connection, and provides interface for sending
+  IRC commands.
   """
 
   use GenServer
   alias DogIRC.Commands
+  alias DogIRC.Connection
 
-  @name __MODULE__
-
-  defstruct nick: Application.get_env(:dogirc, :nick),
-            user: Application.get_env(:dogirc, :user),
-            real: Application.get_env(:dogirc, :real),
-            server: Application.get_env(:dogirc, :server),
-            port: Application.get_env(:dogirc, :port),
-            sock: nil
+  @module __MODULE__
 
   ##
   # External API
 
+  def start_link do
+    server = Application.get_env(:dogirc, :server)
+    port   = Application.get_env(:dogirc, :port, 6667)
+    start_link(server, port)
+  end
+
   @doc "Start client process and join specified server"
-  def start_link(state \\ %DogIRC.Client{}),
-  do: GenServer.start_link(@name, state, name: @name)
+  def start_link(server, port \\ 6667),
+  do: GenServer.start_link(@module, [server: server, port: port], name: @module)
 
   @doc "Join a channel"
   def join(channel),
-  do: GenServer.cast(@name, {:join, channel})
+  do: GenServer.cast(@module, {:join, channel})
 
   @doc "Message a channel or user"
   def privmsg(target, message),
-  do: GenServer.cast(@name, {:privmsg, target, message})
+  do: GenServer.cast(@module, {:privmsg, target, message})
 
   @doc "Send an action to a channel"
   def me(target, action),
-  do: GenServer.cast(@name, {:action, target, action})
+  do: GenServer.cast(@module, {:action, target, action})
 
   @doc "Send a notice to a channel or user"
   def notice(target, message),
-  do: GenServer.cast(@name, {:notice, target, message})
+  do: GenServer.cast(@module, {:notice, target, message})
 
   @doc """
   Send a raw IRC command, "\r\n" is appended automaticasty
   """
   def quote(command),
-  do: GenServer.cast(@name, {:quote, command})
+  do: GenServer.cast(@module, {:quote, command})
 
   @doc "Tell the client to quit, optionally passing a part message"
   def quit,
-  do: GenServer.cast(@name, :quit)
+  do: GenServer.cast(@module, :quit)
 
   def quit(reason),
-  do: GenServer.cast(@name, {:quit, reason})
+  do: GenServer.cast(@module, {:quit, reason})
 
   ##
   # GenServer Implimentation
 
-  def init(state) do
-    sock = Socket.TCP.connect! state.server, state.port, packet: :line, mode: :active
-    Socket.Stream.send!(sock, Commands.nick(state.nick))
-    Socket.Stream.send!(sock, Commands.user(state.user, state.real))
-    { :ok, %{state | sock: sock } }
+  def init([server: server, port: port]) do
+    {:ok, conn} = Connection.start_link(server: server, port: port, client: self)
+    Connection.send_cmd(conn, Commands.nick("DogIRC"))
+    Connection.send_cmd(conn, Commands.user("DogIRC", "DogIRC"))
+    {:ok, %{conn: conn}}
   end
 
   def handle_cast({:join, channel}, state) do
-    Socket.Stream.send!(state.sock, Commands.join(channel))
-    { :noreply, state }
+    Connection.send_cmd(state.conn, Commands.join(channel))
+    {:noreply, state}
   end
 
   def handle_cast({:privmsg, target, message}, state) do
-    Socket.Stream.send!(state.sock, Commands.privmsg(target, message))
-    { :noreply, state }
+    Connection.send_cmd(state.conn, Commands.privmsg(target, message))
+    {:noreply, state}
   end
 
   def handle_cast({:action, target, action}, state) do
-    Socket.Stream.send!(state.sock, Commands.action(target, action))
-    { :noreply, state }
+    Connection.send_cmd(state.conn, Commands.action(target, action))
+    {:noreply, state}
   end
 
   def handle_cast({:notice, target, message}, state) do
-    Socket.Stream.send!(state.sock, Commands.notice(target, message))
-    { :noreply, state }
+    Connection.send_cmd(state.conn, Commands.notice(target, message))
+    {:noreply, state}
   end
 
   def handle_cast({:quote, command}, state) do
-    Socket.Stream.send!(state.sock, "#{command}\r\n")
-    { :noreply, state }
+    Connection.send_cmd(state.conn, command)
+    {:noreply, state}
   end
 
   def handle_cast({:quit, reason}, state) do
-    do_quit(state.socket)
-    { :noreply, state }
+    Connection.quit(state.conn)
+    {:noreply, state}
   end
 
   def handle_cast(:quit, state) do
-    do_quit(state.socket)
-    { :noreply, state }
+    Connection.quit(state.conn)
+    {:noreply, state}
   end
 
-  def handle_info({:tcp, _, "PING " <> target}, state) do
-    Socket.Stream.send!(state.sock, "PONG #{target}\r\n")
-    { :noreply, state }
-  end
-
-  def handle_info({:tcp_closed, _}, state) do
-    { :noreply, %{ state | sock: nil } }
-  end
-
-  def handle_info({:tcp, _, data}, state) do
-    IO.puts "Raw: #{data}"
-    data |> DogIRC.Parser.parse |> Command.to_command |> inspect |> IO.puts
+  def handle_info({:command, cmd}, state) do
+    cmd |> inspect |> IO.puts
     {:noreply, state}
   end
 
   def handle_info(whatever, state) do
     IO.puts "Got: #{inspect whatever}"
     {:noreply, state}
-  end
-
-  defp do_quit(socket) do
-    Socket.Stream.send!(socket, Commands.quit)
-    Socket.Stream.shutdown! socket
   end
 end
