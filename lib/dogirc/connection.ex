@@ -1,4 +1,11 @@
 defmodule DogIRC.Connection do
+  @moduledoc """
+  Handles connection to IRC server.
+
+  * Responds to `PING`s
+  * Forwards messages to `DogIRC.Parser` then client
+  """
+
   use GenServer
   import DogIRC.Commands, only: [quit: 0]
   alias DogIRC.Parser

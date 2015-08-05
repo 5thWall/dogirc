@@ -9,19 +9,26 @@ defmodule DogIRC.Client do
   alias DogIRC.Connection
 
   @module __MODULE__
+  @localhost "localhost"
+  @port 6667
+  @name "DogIRC"
 
   ##
   # External API
 
-  def start_link do
-    server = Application.get_env(:dogirc, :server)
-    port   = Application.get_env(:dogirc, :port, 6667)
-    start_link(server, port)
-  end
+  @doc """
+  Start client process and join configured server
+  """
+  def start_link,
+  do: Application.get_env(:dogirc, :client) |> start_link
 
-  @doc "Start client process and join specified server"
-  def start_link(server, port \\ 6667),
-  do: GenServer.start_link(@module, [server: server, port: port], name: @module)
+  @doc """
+  Start client process and join given server.
+  """
+  def start_link(config) do
+    config = Keyword.merge(Application.get_env(:dogirc, :client), config)
+    GenServer.start_link(@module, config, name: @module)
+  end
 
   @doc "Join a channel"
   def join(channel),
@@ -55,10 +62,18 @@ defmodule DogIRC.Client do
   ##
   # GenServer Implimentation
 
-  def init([server: server, port: port]) do
+  def init(config) do
+    server = config |> Keyword.get(:server, @localhost)
+    port   = config |> Keyword.get(:port, @port)
     {:ok, conn} = Connection.start_link(server: server, port: port, client: self)
-    Connection.send_cmd(conn, Commands.nick("DogIRC"))
-    Connection.send_cmd(conn, Commands.user("DogIRC", "DogIRC"))
+
+    nick_cmd = config |> Keyword.get(:nick, @name) |> Commands.nick
+    conn |> Connection.send_cmd(nick_cmd)
+
+    user = config |> Keyword.get(:user, @name)
+    real = config |> Keyword.get(:real, @name)
+    Connection.send_cmd(conn, Commands.user(user, real))
+
     {:ok, %{conn: conn}}
   end
 

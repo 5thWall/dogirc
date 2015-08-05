@@ -23,7 +23,7 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 
-config :dogirc,
+config :dogirc, :client,
   nick: "DogIRC",
   user: "DogIRC",
   real: "DogIRC",
