@@ -30,6 +30,9 @@ defmodule DogIRC.Client do
     GenServer.start_link(@module, config, name: @module)
   end
 
+  def add_handler(handler, opts),
+  do: GenServer.call(@module, {:add_handler, handler, opts})
+
   @doc "Join a channel"
   def join(channel),
   do: GenServer.cast(@module, {:join, channel})
@@ -63,6 +66,8 @@ defmodule DogIRC.Client do
   # GenServer Implimentation
 
   def init(config) do
+    {:ok, manager} = GenEvent.start_link
+
     server = config |> Keyword.get(:server, @localhost)
     port   = config |> Keyword.get(:port, @port)
     {:ok, conn} = Connection.start_link(server: server, port: port, client: self)
@@ -74,7 +79,12 @@ defmodule DogIRC.Client do
     real = config |> Keyword.get(:real, @name)
     Connection.send_cmd(conn, Commands.user(user, real))
 
-    {:ok, %{conn: conn}}
+    {:ok, %{conn: conn, event_manager: manager}}
+  end
+
+  def handle_call({:add_handler, handler, opts}, state) do
+    resp = GenEvent.add_handler(state.manager, handler, opts)
+    {:reply, resp, state}
   end
 
   def handle_cast({:join, channel}, state) do
@@ -114,6 +124,7 @@ defmodule DogIRC.Client do
 
   def handle_info({:command, cmd}, state) do
     cmd |> inspect |> IO.puts
+    GenEvent.sync_notify(state.manager, cmd)
     {:noreply, state}
   end
 
