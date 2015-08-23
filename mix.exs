@@ -25,6 +25,10 @@ defmodule Dogirc.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:socket, "~> 0.2.8"}]
+    [
+      {:dogma, "~>0.0", only: ~w(dev test)a},
+      {:mix_test_watch, only: :dev},
+      {:socket, "~> 0.2.8"}
+    ]
   end
 end
