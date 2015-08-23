@@ -1,4 +1,9 @@
 defmodule DogIRC.User do
+  @moduledoc """
+  Module for parsing user information from IRC format and storing it in a
+  strucured format.
+  """
+
   @reg ~r/^([a-z]['a-z\d\[\]\{\}\\\^]+)(?:!([^\s]+?))?(?:@(.+))?$/i
   @module __MODULE__
 
@@ -24,4 +29,3 @@ defmodule DogIRC.User do
     %@module{nick: nick}
   end
 end
-
