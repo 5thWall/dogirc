@@ -1,6 +1,4 @@
 defmodule DogIRC.ParserTest do
-  @user %User{nick: "neo"}
-
   use ExUnit.Case, async: true
   alias DogIRC.Parser
 

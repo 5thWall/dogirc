@@ -17,7 +17,7 @@ defmodule DogIRC.User do
     user |> to_string |> parse
   end
 
-  defp do_parse([user, nick, username, host]) do
+  defp do_parse([_user, nick, username, host]) do
     %@module{nick: nick, username: username, host: host}
   end
 
