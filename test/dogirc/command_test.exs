@@ -1,5 +1,5 @@
 defmodule DogIRC.CommandTest do
-  @user %User{nick: "neo"}
+  @user %DogIRC.User{nick: "neo"}
 
   use ExUnit.Case, async: true
   alias DogIRC.Command

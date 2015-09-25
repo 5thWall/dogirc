@@ -30,6 +30,9 @@ defmodule DogIRC.Client do
     GenServer.start_link(@module, config, name: @module)
   end
 
+  @doc """
+  Add a handler which will recieve IRC events from the client.
+  """
   def add_handler(handler, opts),
   do: GenServer.call(@module, {:add_handler, handler, opts})
 
@@ -79,10 +82,10 @@ defmodule DogIRC.Client do
     real = config |> Keyword.get(:real, @name)
     Connection.send_cmd(conn, Commands.user(user, real))
 
-    {:ok, %{conn: conn, event_manager: manager}}
+    {:ok, %{conn: conn, manager: manager}}
   end
 
-  def handle_call({:add_handler, handler, opts}, state) do
+  def handle_call({:add_handler, handler, opts}, _from, state) do
     resp = GenEvent.add_handler(state.manager, handler, opts)
     {:reply, resp, state}
   end
