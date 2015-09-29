@@ -11,6 +11,8 @@ defmodule DogIRC.Connection do
   alias DogIRC.Parser
   alias DogIRC.Command
 
+  require Logger
+
   @module __MODULE__
 
   ##
@@ -58,7 +60,7 @@ defmodule DogIRC.Connection do
   end
 
   def handle_info({:tcp, _, data}, state) do
-    IO.puts "RAW: #{data}"
+    Logger.info "RAW: #{data}"
     forward_cmd = fn ->
       cmd = data |>
       Parser.parse |>
@@ -72,7 +74,7 @@ defmodule DogIRC.Connection do
   end
 
   def handle_info(whatever, state) do
-    IO.puts "Got: #{inspect whatever}"
+    Logger.debug "Unknown message: #{inspect whatever}"
     {:noreply, state}
   end
 end

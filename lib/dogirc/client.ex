@@ -8,6 +8,8 @@ defmodule DogIRC.Client do
   alias DogIRC.Commands
   alias DogIRC.Connection
 
+  require Logger
+
   @module __MODULE__
   @localhost "localhost"
   @port 6667
@@ -126,13 +128,13 @@ defmodule DogIRC.Client do
   end
 
   def handle_info({:command, cmd}, state) do
-    cmd |> inspect |> IO.puts
+    Logger.info "Command: #{inspect cmd}"
     GenEvent.sync_notify(state.manager, cmd)
     {:noreply, state}
   end
 
   def handle_info(whatever, state) do
-    IO.puts "Got: #{inspect whatever}"
+    Logger.debug "Client recieved unknown message: #{inspect whatever}"
     {:noreply, state}
   end
 end
