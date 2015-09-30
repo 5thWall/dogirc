@@ -28,7 +28,7 @@ defmodule DogIRC.Client do
   Start client process and join given server.
   """
   def start_link(config) do
-    config = Keyword.merge(Application.get_env(:dogirc, :client), config)
+    config = Keyword.merge(Application.get_env(:dogirc, :client, []), config)
     GenServer.start_link(@module, config, name: @module)
   end
 
