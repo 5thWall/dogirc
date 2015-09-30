@@ -7,7 +7,7 @@ defmodule DogIRC do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(DogIRC.Client, [])
+      worker(DogIRC.Client, [[]])
     ]
 
     opts = [strategy: :one_for_one, name: DogIRC.Supervisor]
