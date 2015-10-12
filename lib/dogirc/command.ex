@@ -1,4 +1,4 @@
-defmodule DogIRC.Command do
+defmodule Dogirc.Command do
   @module __MODULE__
 
   defstruct from: '',
@@ -6,7 +6,7 @@ defmodule DogIRC.Command do
             target: '',
             message: ''
 
-  alias DogIRC.User
+  alias Dogirc.User
 
   def to_command(%{command: 'PRIVMSG', params: [target, "\x01ACTION " <> message], prefix: user}) do
     %@module{

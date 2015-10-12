@@ -1,19 +1,19 @@
-defmodule DogIRC.Client do
+defmodule Dogirc.Client do
   @moduledoc """
   IRC Client Module. Holds irc connection, and provides interface for sending
   IRC commands.
   """
 
   use GenServer
-  alias DogIRC.Commands
-  alias DogIRC.Connection
+  alias Dogirc.Commands
+  alias Dogirc.Connection
 
   require Logger
 
   @module __MODULE__
   @localhost "localhost"
   @port 6667
-  @name "DogIRC"
+  @name "Dogirc"
 
   ##
   # External API

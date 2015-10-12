@@ -24,8 +24,8 @@ use Mix.Config
 #     import_config "#{Mix.env}.exs"
 
 config :dogirc, :client,
-  nick: "DogIRC",
-  user: "DogIRC",
-  real: "DogIRC",
+  nick: "Dogirc",
+  user: "Dogirc",
+  real: "Dogirc",
   server: "localhost",
   port: 6667

@@ -1,4 +1,4 @@
-defmodule DogIRC.Parser do
+defmodule Dogirc.Parser do
   @module __MODULE__
 
   def parse(command) when is_binary(command) do

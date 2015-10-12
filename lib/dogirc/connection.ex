@@ -1,15 +1,15 @@
-defmodule DogIRC.Connection do
+defmodule Dogirc.Connection do
   @moduledoc """
   Handles connection to IRC server.
 
   * Responds to `PING`s
-  * Forwards messages to `DogIRC.Parser` then client
+  * Forwards messages to `Dogirc.Parser` then client
   """
 
   use GenServer
-  import DogIRC.Commands, only: [quit: 0]
-  alias DogIRC.Parser
-  alias DogIRC.Command
+  import Dogirc.Commands, only: [quit: 0]
+  alias Dogirc.Parser
+  alias Dogirc.Command
 
   require Logger
 

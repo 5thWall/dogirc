@@ -1,4 +1,4 @@
-defmodule DogIRC do
+defmodule Dogirc do
   @moduledoc false
 
   use Application
@@ -7,10 +7,10 @@ defmodule DogIRC do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(DogIRC.Client, [[]])
+      worker(Dogirc.Client, [[]])
     ]
 
-    opts = [strategy: :one_for_one, name: DogIRC.Supervisor]
+    opts = [strategy: :one_for_one, name: Dogirc.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

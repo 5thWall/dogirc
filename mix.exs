@@ -14,7 +14,7 @@ defmodule Dogirc.Mixfile do
   def application do
     [
       applications: [:logger, :socket],
-      mod: {DogIRC, []}
+      mod: {Dogirc, []}
     ]
   end
 

@@ -1,4 +1,4 @@
-defmodule DogIRC.Commands do
+defmodule Dogirc.Commands do
   @moduledoc """
   Generates properly formatted IRC commands.
   """

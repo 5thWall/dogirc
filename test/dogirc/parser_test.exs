@@ -1,6 +1,6 @@
-defmodule DogIRC.ParserTest do
+defmodule Dogirc.ParserTest do
   use ExUnit.Case, async: true
-  alias DogIRC.Parser
+  alias Dogirc.Parser
 
   test "converts to internal representation" do
     assert Parser.parse(":neo PRIVMSG #matrix :I am the one")

@@ -1,4 +1,4 @@
-defmodule DogIRC.User do
+defmodule Dogirc.User do
   @moduledoc """
   Module for parsing user information from IRC format and storing it in a
   strucured format.
