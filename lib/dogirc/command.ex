@@ -1,10 +1,10 @@
 defmodule Dogirc.Command do
   @module __MODULE__
 
-  defstruct from: '',
+  defstruct from: "",
             type: :noop,
-            target: '',
-            message: ''
+            target: "",
+            message: ""
 
   alias Dogirc.User
 
@@ -39,6 +39,15 @@ defmodule Dogirc.Command do
     %@module{
       type: :join,
       target: target,
+      from: User.parse(user)
+    }
+  end
+
+  def to_command(%{command: 'PART', params: [target, message], prefix: user}) do
+    %@module{
+      type: :part,
+      target: target,
+      message: message,
       from: User.parse(user)
     }
   end
