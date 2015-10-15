@@ -31,7 +31,8 @@ defmodule Dogirc.Mixfile do
     [
       {:dogma, "~>0.0", only: ~w(dev test)a},
       {:mix_test_watch, only: :dev},
-      {:socket, "~> 0.2.8"}
+      {:socket, "~> 0.2.8"},
+      {:towel, "~> 0.2.1"}
     ]
   end
 end
