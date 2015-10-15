@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/5thWall/dogirc.png?label=ready&title=Ready)](https://waffle.io/5thWall/dogirc)
 Dogirc
 ======
 
