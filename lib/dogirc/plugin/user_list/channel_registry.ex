@@ -41,7 +41,7 @@ defmodule Dogirc.Plugin.UserList.ChannelRegistry do
   end
 
   def handle_cast({:create, chan, users}, state) do
-    {:ok, names} = UL.NameBucket.Supervisor.start_bucket(state.buckets, users)
+    {:ok, names} = UL.NameSupervisor.start_bucket(state.buckets, users)
     chans = HashDict.put(state.chans, chan, names)
     {:noreply, %{state | chans: chans}}
   end

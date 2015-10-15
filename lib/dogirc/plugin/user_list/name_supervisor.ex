@@ -1,4 +1,4 @@
-defmodule Dogirc.Plugin.UserList.NameBucket.Supervisor do
+defmodule Dogirc.Plugin.UserList.NameSupervisor do
   @moduledoc """
   Module for supervising NameBuckets
   """

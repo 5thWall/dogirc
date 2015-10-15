@@ -3,6 +3,7 @@ defmodule Dogirc.Plugin.UserList.ChannelRegistryTest do
 
   alias Dogirc.Plugin.UserList.ChannelRegistry
   alias Dogirc.Plugin.UserList.NameBucket
+  alias Dogirc.Plugin.UserList.NameSupervisor
   alias Dogirc.User
 
   @users [
@@ -19,7 +20,7 @@ defmodule Dogirc.Plugin.UserList.ChannelRegistryTest do
   ]
 
   setup do
-    {:ok, sup} = NameBucket.Supervisor.start_link
+    {:ok, sup} = NameSupervisor.start_link
     {:ok, reg} = ChannelRegistry.start_link(sup)
     {:ok, registry: reg}
   end
